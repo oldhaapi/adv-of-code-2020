@@ -16,7 +16,7 @@
       lines)))
 
 (defn binpart
-  "Given the inputs [upper lower] and 'F' and 'B',
+  "Given the inputs [upper lower] and 'F' and 'B' or 'L' and 'R',
   do the binary partitioning to converge on equal upper and lower bounds.
   F means use lower half, B means upper half.
   To be used in a reduction."
