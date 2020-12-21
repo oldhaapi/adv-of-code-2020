@@ -32,5 +32,7 @@
   [& opts]
   (let [infile (if (nil? opts) "puzzleinput.txt" (first opts))
         puzdata (load-puzz infile)
-        counts (reduce + (map #(-> (str/join %) set vals count) puzdata))]
-    (println "Count =" counts)))
+        counts-yes (reduce + (map #(-> (str/join %) set vals count) puzdata))
+        count-common-yes (reduce + (map #(-> (apply clojure.set/intersection (map set %)) count) puzdata))]
+    (println "Count =" counts-yes)
+    (println "Common count =" count-common-yes)))
