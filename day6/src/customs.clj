@@ -25,6 +25,11 @@
           (if (empty? gs)
             (reverse grps)
             (recur (cons gs grps) (nthrest ls (inc (count gs))))))))))
+(defn ld-pz
+  [source]
+  (with-open [r (io/reader source)]
+    (let [lines (line-seq r)]
+      (apply #(take-while (fn[b] (not (re-find #"^$" b))) )lines))))
 
 (defn -main
   "For each group, count the number of questions to which anyone
