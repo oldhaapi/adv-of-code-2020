@@ -44,10 +44,31 @@
   (count (filter #(not (nil? %)) (map #(find-gold rules %) (keys rules))))
 )
 
+(defn bag-keys
+  "Find all bags/keys starting with given bag"
+  [rules bag-color]
+  (tree-seq (fn [n] (not (nil? (keys (n rules)))))
+            #(keys (% rules))
+            bag-color))
+
+(defn bag-holds
+  "Each bag holds n bags, each bag holds m bags"
+  [rules bag]
+  (let [node (bag rules)
+        subnodes (keys node)
+        numbags (if (nil? subnodes) 0 (reduce + (vals node)))
+        subnum (if (zero? numbags) [0]
+                   (for [s subnodes
+                         :let [sval (s node)
+                               sn (* sval (bag-holds rules s))]]
+                     sn))]
+    (reduce + numbags subnum)))
 
 (defn -main
   [& opts]
   (let [source (if (nil? opts) "puzzleinput.txt" (first opts))
         rules-map (load-puzz source)
         _ (println "Counted " (count rules-map) "rules")]
-    (println "Found " (find-shiny-gold rules-map) "ways to pack shiny-gold bags")))
+
+    (println "Found" (find-shiny-gold rules-map) "ways to pack shiny-gold bags")
+    (println "Bag of shiny gold holds" (bag-holds rules-map :shiny-gold) "bags")))
