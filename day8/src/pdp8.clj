@@ -64,18 +64,54 @@
   (println @ip)
   (do-op (getnext tape)))
 
-(defn run
-  [& opts]
-  (let [source (if (nil? opts) "puzzleinput.txt" (first opts))
-        tape (load-puzz source)
-        _ (println "Counted " (count tape) "instructions")]
-    (reset! ip 0)
-    (reset! acc 0)
-    (reset! inst-set #{})
+(defn exec [tape]
+  (reset! ip 0)
+  (reset! acc 0)
+  (reset! inst-set #{})
+
+  (let [maxip (count tape)]
     (loop []
-      (if (not (contains? @inst-set @ip))
+      (if (not (or (contains? @inst-set @ip) (= maxip @ip)))
         (do
           (donext tape)
           (recur))
         (println "ACC is" @acc)))
+    (= maxip @ip)))
+
+(defn exec2 [tape idx]
+  (reset! ip 0)
+  (reset! acc 0)
+  (reset! inst-set #{})
+
+  (let [maxip (dec (count tape))]
+    (let [[op arg] (nth tape idx)]
+      (println "Changing op" op "at idx" idx)
+      (loop []
+        (if (not (or (contains? @inst-set @ip) (= maxip @ip)))
+          (do
+            (if (= @ip idx)
+              (do
+                (swap! inst-set conj @ip)
+                (if (= op "jmp")
+                  (do-op (cons "nop" [arg]))
+                  (do-op (cons "jmp" [arg]))))
+              (donext tape))
+            (recur))
+          (println "ACC is" @acc))))
+    (>= @ip (dec maxip))))
+
+(defn -main
+  [& opts]
+  (let [source (if (nil? opts) "puzzleinput.txt" (first opts))
+        tape (load-puzz source)
+        _ (println "Counted " (count tape) "instructions")
+        maxip (dec (count tape))]
+    (exec tape)                         ; return part 1 result
+    (println "Looking for bad jmp/nop...")
+    (loop [idx 0]
+      (let [[op arg] (nth tape idx)]
+        (if (and (or (= "jmp" op) (= "nop" op)) (exec2 tape idx))
+          (println "Found bad inst" idx)
+          (if (< idx maxip)
+            (recur (inc idx)) (nth tape idx)))))
     (println "Final accum:" @acc)))
