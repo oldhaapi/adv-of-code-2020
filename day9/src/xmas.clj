@@ -33,7 +33,7 @@
         (recur (inc idx))
         (do
           (println "Found solution:" n "at idx" idx)
-          (println "Set:\n"s)
+          ; (println "Set:\n"s)
           n)))))
 
 (defn solve
@@ -60,6 +60,6 @@
         tape (load-puzz source)
         intcnt (count tape)
         _ (println "Counted " intcnt "integers")
-        weaknum (solve-weaknum tape)
-        ]
-    (solve tape weaknum)))
+        weaknum (solve-weaknum tape)]
+    (println "Part 1:" weaknum)
+    (println "Part 2:" (solve tape weaknum))))
