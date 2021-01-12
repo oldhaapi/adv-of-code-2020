@@ -23,7 +23,7 @@
                            (map #(+ x %) (nthrest ints i))))
                        (range sz-preamble))))))
 
-(defn solve
+(defn solve-weaknum
   "Look for the number that is NOT in the set of sums of the previous preamble"
   [tape]
   (loop [idx sz-preamble]
@@ -36,11 +36,30 @@
           (println "Set:\n"s)
           n)))))
 
+(defn solve
+  "Given the weak number, find the set of contiguous numbers that sum to it."
+  [tape w]
+  (loop [idx sz-preamble]
+    (let [soln
+          (loop [sub 2]
+            (let [e (sort (take sub (nthrest tape idx)))
+                  sum (reduce + e)]
+              (if (= sum w)
+                (+ (first e) (first (take-last 1 e)))
+                (if (> sum w)
+                  0
+                  (recur (inc sub)))))
+            )]
+      (if (zero? soln)
+        (recur (inc idx))
+        soln))))
+
 (defn -main
   [& opts]
   (let [source (if (nil? opts) "puzzleinput.txt" (first opts))
         tape (load-puzz source)
         intcnt (count tape)
         _ (println "Counted " intcnt "integers")
+        weaknum (solve-weaknum tape)
         ]
-    (solve tape)))
+    (solve tape weaknum)))
