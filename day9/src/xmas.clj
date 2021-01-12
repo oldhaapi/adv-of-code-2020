@@ -26,15 +26,11 @@
 (defn solve-weaknum
   "Look for the number that is NOT in the set of sums of the previous preamble"
   [tape]
-  (loop [idx sz-preamble]
-    (let [n (nth tape idx)
-          s (make-sums tape idx)]
-      (if (contains? s n)
-        (recur (inc idx))
-        (do
-          (println "Found solution:" n "at idx" idx)
-          ; (println "Set:\n"s)
-          n)))))
+  (nth tape
+       (first
+        (filter
+         #(not (contains? (make-sums tape %) (nth tape %)))
+         (range sz-preamble (count tape))))))
 
 (defn solve
   "Given the weak number, find the set of contiguous numbers that sum to
@@ -59,6 +55,6 @@
         tape (load-puzz source)
         intcnt (count tape)
         _ (println "Counted " intcnt "integers")
-        weaknum (solve-weaknum tape)]
+        weaknum (sw2 tape)]
     (println "Part 1:" weaknum)
     (println "Part 2:" (solve tape weaknum))))
