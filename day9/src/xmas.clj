@@ -37,7 +37,8 @@
           n)))))
 
 (defn solve
-  "Given the weak number, find the set of contiguous numbers that sum to it."
+  "Given the weak number, find the set of contiguous numbers that sum to
+  it, and return the sum of the lowest + highest of those"
   [tape w]
   (loop [idx sz-preamble]
     (let [soln
@@ -45,7 +46,9 @@
             (let [e (sort (take sub (nthrest tape idx)))
                   sum (reduce + e)]
               (if (= sum w)
-                (+ (first e) (first (take-last 1 e)))
+                (do
+                  (println "Fount" (count e) "elements at index" idx)
+                  (+ (first e) (first (take-last 1 e))))
                 (if (> sum w)
                   0
                   (recur (inc sub)))))
