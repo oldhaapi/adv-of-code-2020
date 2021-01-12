@@ -47,7 +47,7 @@
                   sum (reduce + e)]
               (if (= sum w)
                 (do
-                  (println "Fount" (count e) "elements at index" idx)
+                  (println "Found" (count e) "elements at index" idx)
                   (+ (first e) (first (take-last 1 e))))
                 (if (> sum w)
                   0
