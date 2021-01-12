@@ -40,22 +40,18 @@
   "Given the weak number, find the set of contiguous numbers that sum to
   it, and return the sum of the lowest + highest of those"
   [tape w]
-  (loop [idx sz-preamble]
-    (let [soln
-          (loop [sub 2]
-            (let [e (sort (take sub (nthrest tape idx)))
-                  sum (reduce + e)]
-              (if (= sum w)
-                (do
-                  (println "Found" (count e) "elements at index" idx)
-                  (+ (first e) (first (take-last 1 e))))
-                (if (> sum w)
-                  0
-                  (recur (inc sub)))))
-            )]
-      (if (zero? soln)
-        (recur (inc idx))
-        soln))))
+  (first
+   (filter #(not (zero? %))
+           (map #(loop [sub 2]
+                   (let [e (sort (take sub (nthrest tape %)))
+                         sum (reduce + e)]
+                     (if (= sum w)
+                       (do
+                         (println "Found" (count e) "elements at index" %)
+                         (+ (first e) (first (take-last 1 e))))
+                       (if (> sum w)
+                         0
+                         (recur (inc sub)))))                                           ) (range sz-preamble (count tape))))))
 
 (defn -main
   [& opts]
