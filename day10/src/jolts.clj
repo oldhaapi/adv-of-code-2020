@@ -55,7 +55,7 @@
   (let [goal (+ 3 (first (take-last 1 tape)))]
     (reduce + (count (find-adapters tape 0)) (map #(count (find-adapters tape %)) tape))))
 
-(defn solve
+(defn s3
   "
   from collections import OrderedDict as odict, Counter
 
@@ -100,6 +100,35 @@ print dfc(dag, 0)  "
     (dfc-memo dag 0)
     )
   )
+
+(defn solve
+  "arr = [int(line.rstrip()) for line in        open('input.txt', 'r').readlines()]
+  arr.sort()
+  arr.append(arr[-1]+3)
+
+  memo = {0: 1}
+  for r in arr:
+  memo[r] = memo.get(r-3,0)
+          + memo.get(r-2,0)
+          + memo.get(r-1,0)
+  print(memo[arr[-1]])
+
+  15790581481472
+  "
+  [tape]
+  (let [last-ad (first (take-last 1 tape))
+        jolts (conj (vec tape) (+ 3 last-ad))
+        memo (loop [m {0 1} j (first jolts) jrest (rest jolts)]
+               (let [mtmp (+ (get m (- j 3) 0)
+                             (get m (- j 2) 0)
+                             (get m (- j 1) 0))
+
+                     ]
+                 (if (empty? jrest)
+                   m
+                   (recur (assoc m j mtmp) (first jrest) (rest jrest)))))]
+    ; (println memo)
+    (get memo last-ad)))
 
 (defn -main
   [& opts]
