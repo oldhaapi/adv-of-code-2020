@@ -58,9 +58,40 @@
         ay (if (< y 0) (- y) y)]
     (+ ax ay)))
 
+(defn rotate-waypoint
+  ""
+  [x y c d]
+  (if (= "R" c)
+    (cond
+      (= d 90) [y (- x)]
+      (= d 180) [(- x) (- y)]
+      (= d 270) [(- y) x]
+      :else [x y])
+    (cond
+      (= d 90) [(- y) x] ; 10 4 -> -4 10
+      (= d 180) [(- x) (- y)]
+      (= d 270) [y (- x)]
+      :else [x y])))
+
+(defn dowaypoints
+  [[x y wx wy] [c d]]
+  (let [newpos (cond
+                 (= c "N") [x y wx (+ wy d)]
+                 (= c "E") [x y (+ wx d) wy]
+                 (= c "S") [x y wx (- wy d)]
+                 (= c "W") [x y (- wx d) wy]
+                 (= c "R") [x y (rotate-waypoint wx wy c d)]
+                 (= c "L") [x y (rotate-waypoint wx wy c d)]
+                 (= c "F") [(+ x (* wx d)) (+ y (* wy d)) wx wy])]
+    (println "I:" [c d] [x y wx wy] "O:" newpos)
+    (flatten newpos)))
+
 (defn solvep2
   [tape]
-  )
+  (let [[x y wx wy] (reduce dowaypoints [0 0 10 1] tape)
+        ax (if (< x 0) (- x) x)
+        ay (if (< y 0) (- y) y)]
+    (+ ax ay)))
 
 (defn -main
   [& opts]
