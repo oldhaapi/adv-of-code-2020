@@ -83,7 +83,7 @@
                  (= c "R") [x y (rotate-waypoint wx wy c d)]
                  (= c "L") [x y (rotate-waypoint wx wy c d)]
                  (= c "F") [(+ x (* wx d)) (+ y (* wy d)) wx wy])]
-    (println "I:" [c d] [x y wx wy] "O:" newpos)
+    ; (println "I:" [c d] [x y wx wy] "O:" newpos)
     (flatten newpos)))
 
 (defn solvep2
