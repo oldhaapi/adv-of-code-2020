@@ -51,7 +51,7 @@
     (reduce * (map #(find-trees hill %) slopelist))))
 
 (defn -main [& opts]
-  ;; Find the count of valid passwords
+  ;; Find the count of trees down the slopes
   (let [infile (if (nil? opts) "puzzleinput.txt" (first opts))
         puzdata (load-puzz infile)
         slope [3 1]]
