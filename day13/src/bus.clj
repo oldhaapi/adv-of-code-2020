@@ -2,6 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as st]
             [flatland.ordered.map :as flatmap]
+            [clojure.edn :as edn]
             ))
 
 (defn load-puzz
@@ -52,12 +53,35 @@
     (first
      (filter
       (fn [t]
-        (let [t-lbus (+ t (get busmap lbus))]
+        (let [t-lbus (+ t (get busmap lbus))
+              t-marker (mod t 100000000000000N)]
+          (if (zero? t-marker)
+            (println "t="t-marker))
           (if (zero? (mod t-lbus lbus))
             (every? zero? (map #(mod (+ t (get busmap %)) %) (keys busmap)))
             false)
           ))
       (iterate (partial + fbus) start-t)))))
+
+(defn solve3
+  "A proper part-2 solution from zengxinhui
+  on the Reddit pages"
+  []
+  (let [gcd (fn [a b] (if (= 0 b) a (recur b (mod a b))))
+        lcm (fn [a b] (/ (* a b) (gcd a b)))
+        f (fn [n [_ s]]
+            (if s (let [x (edn/read-string s)] [x (mod (- (* x (quot n x)) n) x)])))
+        [timestamp & buses1] (->> (slurp "puzzleinput.txt") (re-seq #"\d+") (map edn/read-string))
+        buses2 (->> (slurp "puzzleinput.txt")
+                    (re-seq #"(\d+)|x")
+                    rest
+                    (keep-indexed f))]
+    [(->> (map #(vector (- % (mod timestamp %)) %) buses1) sort first (reduce *))
+     ((reduce (fn [[factor1 t] [factor2 remainder2]]
+                (loop [t t]
+                  (if (= (mod t factor2) remainder2)
+                    [(lcm factor1 factor2) t]
+                    (recur (+ t factor1))))) buses2) 1)]))
 
 (defn -main
   [& opts]
@@ -67,4 +91,5 @@
         busmap (get-buses (second (load-puzz source true)))
         ]
     (println "Part 1:" (solve ts busids))
+    (println "Part 2 (from reddit):" (solve3))
     (println "Part 2:" (solvep2 busmap))))
