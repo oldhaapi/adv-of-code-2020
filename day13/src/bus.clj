@@ -46,7 +46,7 @@
         lbus (bigint (last (keys busmap)))
         fbus (first (keys busmap))
         loffset (last (vals busmap))
-        start-t (* fbus (quot 100000000000000N bus))
+        start-t (* fbus (quot 100000000000000N fbus))
         _ (println "Longest bus is" lbus "longest offset is" loffset "starting at t=" start-t)
         ]
     (first
