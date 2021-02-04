@@ -64,11 +64,9 @@
   )
 
 (defn pow-b
+  "Return fn taking b to the n power"
   [b]
-  (fn [y] (reduce * (take y (repeat b)))))
-
-
-
+  (fn [n] (reduce * (take n (repeat b)))))
 
 (defn store
   [[locstr sval] mask]
@@ -87,16 +85,11 @@
                            (= \1 mask-b) (bit-set l b)
                            (= \0 mask-b) l
                            (= \X mask-b) (bit-clear l b)))
-                       ) (-> mask count range))
-        _ (println "Xoffsets:" xoffsets)
-        ;_ (println "bits:" bits)
-        _ (println "locz:" locz)
-        _ (println "mask:" mask)
+                       ) loc (-> mask count range))
         ]
     (mapv (fn [nbin]
             (let [loc (reduce (fn [l i]
-                                (let [_ (println "nbin:" nbin "bit offset:" i)
-                                      b (bit-test nbin i)]
+                                (let [b (bit-test nbin i)]
                                   (if b
                                     (bit-set l (get xoffsets i))
                                     l))) locz (range (count xoffsets)))]
@@ -112,8 +105,9 @@
         (cond
           (= "mask" (first inst)) (recur mem (second inst) (rest t))
           :else
-          (let [kvs (store inst mask)]
-            (recur (apply (partial assoc mem) kvs) mask (rest t))))))))
+          (let [kvs (store inst mask)
+                ]
+            (recur (apply assoc mem (flatten kvs)) mask (rest t))))))))
 
 (defn solvep2
   [tape]
@@ -125,4 +119,4 @@
         tape (load-puzz source)
         ]
     (println "Part 1:" (solve tape))
-    (println "Part 2:" (solvep2 tape))))
+    (println "Part 2 (looking for 4160009892257):" (solvep2 tape))))
