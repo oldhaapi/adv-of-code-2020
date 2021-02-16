@@ -20,25 +20,22 @@
   Return lazy sequence of turns.
   "
   [tape maxturn]
-  (let [tapelen (count tape)
-        ]
-    (let [mem (reduce (fn [a i] (assoc a (get tape i) (inc i))) {} (range tapelen))
+  (let [tapelen (count tape)]
+    (let [mem (reduce (fn [a i] (assoc a (get tape i) (inc i))) (array-map) (range tapelen))
           _ (println mem)
           spoke 0
           [_ rez] (reduce (fn [[mem spoken] i]
                             (let [turn i
                                   agediff (- turn (get mem spoken 0))
                                   _ (if (<= turn 15)
-                                      (println "t:"turn spoken))
-                                  ]
+                                      (println "t:"turn spoken))]
                               (if (= turn maxturn)
                                 [{} spoken]
                                 (if (contains? mem spoken)
                                   [(assoc mem spoken turn) agediff]
                                   [(assoc mem spoken turn) 0])))
                             ) [mem spoke] (nthrest (take maxturn (iterate inc 1)) tapelen))]
-      rez
-      )))
+      rez)))
 
 (defn -main
   [& opts]
