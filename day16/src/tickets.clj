@@ -1,6 +1,7 @@
 (ns tickets
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.pprint :as pp]
             ))
 
 (defn read-lines
@@ -72,7 +73,7 @@
         tape (load-puzz source)
         rowcnt (count tape)
         _ (println "Counted " rowcnt "rows")
-        ; _ (println tape)
+         _ (pp/pprint tape)
         ]
     (println "Part 1:" (solve tape))
     (println "Part 2:" (solvep2 tape))))
