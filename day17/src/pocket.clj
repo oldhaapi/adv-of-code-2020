@@ -25,9 +25,15 @@
           ydim (count lines)
           xdim (count (first lines))
           blank-layer (to-array-2d (partition xdim (take (* xdim ydim) (repeat false))))
-          given (to-array-2d (partition xdim (keep #(if (= \. %) false true) (apply concat lines))))]
+          given (to-array-2d
+                 (partition xdim (keep
+                                  #(if (= \. %)
+                                     false
+                                     true) (apply concat lines))))]
       (println "read" ydim "lines")
-      (into {} (keep #(if (zero? %) {% given} {% blank-layer}) (range (- maxz) (inc maxz)))))))
+      (into {} (keep #(if (zero? %)
+                        {% given}
+                        {% blank-layer}) (range (- maxz) (inc maxz)))))))
 
 (defn solve
   [tape]
@@ -39,8 +45,8 @@
 
 (defn -main
   [& opts]
-  (let [source (if (nil? opts) "puzz.txt" (first opts))
-        tape (load-puzz source)
+  (let [source (if opts (first opts) "puzz.txt")
+        tape (load-puzz source 6)
         rowcnt (count tape)
         _ (println "Counted " rowcnt "rows")
         ; _ (pp/pprint tape)
